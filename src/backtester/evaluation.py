@@ -2,8 +2,16 @@ from backtester import metrics
 
 def evaluate_strategy(df, trades):
 
-    report = {}
+    """
+    This function executes whatever metric you want to see 
+    
+    :param df: Description
+    :param trades: Description
+    """
 
+    report = {} #empty dictionary for report
+
+    #enact metrics and save to keys
     report["Total Return"] = metrics.total_return(df)
     report["Max Drawdown"] = metrics.max_drawdown(df)
     report["Sharpe Ratio"] = metrics.sharpe_ratio(df)

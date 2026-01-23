@@ -9,25 +9,25 @@ from backtester.evaluation import evaluate_strategy, print_evaluation
 
 if __name__ == "__main__":
 
-    df = load_ohlcv("AAPL", "2015-01-01", "2026-01-01")
+    df = load_ohlcv("AAPL", "2015-01-01", "2026-01-01") #load in data from database
 
-    df = indicator_pipeline(df)
+    df = indicator_pipeline(df) #calculate indicators of stock price to set up to enact strategy
 
-    df = basic_strategy(df)
+    df = basic_strategy(df) #develops positions from indicators
 
-    df = backtest(df)
+    df = backtest(df) #calculate returns, strategy returns, equity curve, and drawdown
 
-    df.to_csv("data/raw/strategy_timeline.csv")
+    df.to_csv("data/raw/strategy_timeline.csv") #export the dataframe in the context of strategy to return to a csv
 
-    trade_log = extract_trades(df)
+    trade_log = extract_trades(df) # this looks a every strategy position and extracts when and where trades were made
 
-    trade_log.to_csv("data/raw/trade_log.csv")
+    trade_log.to_csv("data/raw/trade_log.csv") #export out the trade log for interrogation
 
-    report = evaluate_strategy(df, trade_log)
+    report = evaluate_strategy(df, trade_log) #1 pager showing high level key metrics for strategy
 
-    print_evaluation(report)
+    print_evaluation(report) #print it into the terminal
 
-    pd.DataFrame([report]).to_csv("data/raw/evaluation.csv")
+    pd.DataFrame([report]).to_csv("data/raw/evaluation.csv") #export for posterity
 
 
 

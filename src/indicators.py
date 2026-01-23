@@ -25,7 +25,7 @@ def SMA(df, window=20):
     :param window: Window of time (days)
     """
     
-    df[f"sma_{window}"] = df["close"].rolling(window).mean()
+    df[f"sma_{window}"] = df["close"].rolling(window).mean() # creates a column in the DF that is populated by the mean of the values returned from a "rolling" window across the data
 
     return df
 def EMA(df, window=20):
@@ -55,7 +55,7 @@ def EMA(df, window=20):
     :param window: window of time
     """
     
-    df[f"ema_{window}"] = df["close"].ewm(span=window, adjust=False).mean()
+    df[f"ema_{window}"] = df["close"].ewm(span=window, adjust=False).mean()# creates a column in the DF that is populated by the mean of the values returned from a "rolling" window across the data giving more weight to more recent data
 
     return df
 
@@ -85,24 +85,23 @@ def RSI(df, window=14):
     :param window: window of time
     """
 
-    #calculate price changes
-    delta = df["close"].diff()
+    #calculate price changes day to previous day
+    delta = df["close"].diff() 
 
     #gains postive deltas and losess negative deltas
 
-    gain = delta.clip(lower=0)
-    loss = -delta.clip(upper=0)
+    gain = delta.clip(lower=0) #captures only the positive values in the series
+    loss = -delta.clip(upper=0) #captures only the negative values in the series
 
     #Wilder's Smoothing (EMA with adjsut-False)
 
-    avg_gain = gain.ewm(alpha=1/window, adjust=False).mean()
+    avg_gain = gain.ewm(alpha=1/window, adjust=False).mean() # These take the gains made in a given window and attempt to smooth the erratic outliers
     avg_loss = loss.ewm(alpha=1/window, adjust=False).mean()
 
     #relative strength
-    rs = avg_gain / avg_loss
+    rs = avg_gain / avg_loss #a measure of the prices strength in a given window. higher values mean oversold and could reverse while lower values mean oversold and could reverse 
 
     #RSI formula
-
     df[f"rsi_{window}"] = 100 - (100/(1+rs))
 
     return df
