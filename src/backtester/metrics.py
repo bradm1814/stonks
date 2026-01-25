@@ -46,9 +46,8 @@ def number_of_trades(df):
     
     :param df: Description
     """
-    changes = df["position"].diff() # calculate current position difference from last position
-
-    number_of_trades = (changes != 0).sum() #however many times it flips is how many trades you made
+    entries = (df["position"].shift() == 0) & (df["position"] != 0)
+    return entries.sum()
 
     return number_of_trades
 
