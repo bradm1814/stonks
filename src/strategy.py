@@ -31,10 +31,9 @@ def basic_strategy(df):
 
     df["signal"] = 0 #initiate a signal at 0
     df.loc[buy_condition, "signal"] = 1 # for every condition where buy_condition is true, signal a buy position
-    df.loc[sell_condition, "signal"] = -1 # for every condition where sell condition is true, signal a short position
+    #df.loc[sell_condition, "signal"] = -1 # for every condition where sell condition is true, signal a short position
 
-    df["position"] = df["signal"].replace(0, method = "ffill")#this creates a position column and defaults it to the values of the signal column. 
-                                                              #Then it takes any zeroes carried over from the signal column and "ffill" forward fills it with the last non zero number
+    df["position"] = df["signal"]
 
     return df
 
