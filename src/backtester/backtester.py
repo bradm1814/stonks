@@ -1,14 +1,17 @@
 
 
-def backtest(df):
+def backtest(df, signals):
 
     """
     runs positions taken during strategy back through data and calculates how the strategy performed over the interval.
     
     :param df: dataframe produced after running strategy across data
+    :param signals: Series produced after training model and having it makes predictions on the prices df
     """
 
     df = df.copy()
+
+    df["position"] = signals.reindex(df.index).fillna(0)
 
     #calculate return from previous close to today's close
     df["return"] = df["close"].pct_change() # the return value for each day is calculated by the difference in percentage
