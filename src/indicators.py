@@ -58,7 +58,6 @@ def EMA(df, window=20):
     df[f"ema_{window}"] = df["close"].ewm(span=window, adjust=False).mean()# creates a column in the DF that is populated by the mean of the values returned from a "rolling" window across the data giving more weight to more recent data
 
     return df
-
 def RSI(df, window=14):
     """
 
