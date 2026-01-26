@@ -22,3 +22,12 @@ def make_directional_labels(price_df: pd.DataFrame, horizon: int=1) ->pd.Series:
 
     labels = labels.iloc[:-horizon]
     return labels
+
+def make_x_bar_future_labels(price_df: pd.DataFrame, x: int=5) ->pd.DataFrame:
+
+    df = price_df.copy()
+    df = df.sort_values('date')
+    df[f"{x}_bar_future"] = (df["close"].shift(-x) - df["close"]) / df["close"]
+
+    df = df.dropna(subset=[f"{x}_bar_future"])
+    return df

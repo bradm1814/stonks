@@ -1,14 +1,21 @@
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 def make_baseline_model(model_type: str = 'logistic'):
-    if model_type == "logistic":
-        return LogisticRegression(max_iter=1000)
-    elif model_type == "rf":
-        return RandomForestClassifier(
-            n_estimators=200,
-            max_depth=5,
-            random_state=42,
+    # choose model type
+    if model_type == "regression":
+        model = RandomForestRegressor(
+            n_estimators=300,
+            max_depth=6,
+            random_state=42
+        )
+    elif model_type == "classification":
+        model = RandomForestClassifier(
+            n_estimators=300,
+            max_depth=6,
+            random_state=42
         )
     else:
-        raise ValueError(f"Unknown model_type: {model_type}")
+        raise ValueError("model_type must be regression or classification")
+    
+    return model
