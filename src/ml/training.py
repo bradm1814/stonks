@@ -37,7 +37,7 @@ def prepare_ml_dataset(price_df: pd.DataFrame, label_func, **label_kwargs):
 
     return X,y
 
-def train_ml_model(price_df, label_func, model_type="regression", model_name=None, model_dir = "data/models", **label_kwargs):
+def train_ml_model(price_df, label_func, model_type, model_name, model_dir = "data/models", **label_kwargs):
 
     # build Dataset
     X, y = prepare_ml_dataset(price_df, label_func,  **label_kwargs)

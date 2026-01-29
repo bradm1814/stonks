@@ -5,7 +5,8 @@ from src.ml.features import build_feature_matrix
 def generate_ensemble_signals(
         price_df: pd.DataFrame,
         dir_model_path: str,
-        reg_model_path: str,
+        reg5_model_path: str,
+        reg10_model_path: str,
         prob_threshold: float=0.55,
         return_threshold: float=0.0
 ) -> pd.Series:
@@ -19,7 +20,8 @@ def generate_ensemble_signals(
 
     #load models
     dir_model = joblib.load(dir_model_path)
-    reg_model = joblib.load(reg_model_path)
+    reg5_model = joblib.load(reg5_model_path)
+    reg10_model = joblib.load(reg10_model_path)
 
     #build_features
     X = build_feature_matrix(df)
@@ -28,19 +30,19 @@ def generate_ensemble_signals(
     df = df.loc[X.index]
 
     df['prob_up'] = dir_model.predict_proba(X)[:, 1]
-    df['predicted_return'] = reg_model.predict(X)
+    df['predicted_return_5_bar'] = reg5_model.predict(X)
+    df['predicted_return_10_bar'] = reg10_model.predict(X)
 
     #ensemble logic
 
-    df["signal"] = 0
-    df.loc[
-        (df["prob_up"] > prob_threshold) &
-        (df["predicted_return"]>return_threshold),
-        "signal",
-    ] = 1
+    df["ensemble_score"] = (
+        0.5 *df["prob_up"] +
+        0.3 *df['predicted_return_5_bar'] +
+        0.2 *df['predicted_return_10_bar']
+    )
 
-    #backtester expects 'position'
+    df["signal"] = (df["ensemble_score"]>0).astype(int)
 
+    #backtester wants position
     df['position'] = df['signal']
-
     return df['position']

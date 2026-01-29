@@ -7,27 +7,44 @@ from src.backtester.backtester import backtest
 from backtester.trade_log import extract_trades
 from backtester.evaluation import evaluate_strategy, print_evaluation
 
+def time_series_split(df, train_ratio=0.8):
+    n=len(df)
+    split_idx = int(n * train_ratio)
+    train_df = df.iloc[:split_idx].copy()
+    test_df = df.iloc[split_idx:].copy()
+    return train_df, test_df
+
 def main():
     price_df = load_ohlcv("AAPL", "2015-01-01", "2026-01-01")
 
+    train_df, test_df = time_series_split(price_df, train_ratio=0.8)
+
     dir_model, dir_metrics, dir_path = train_ml_model(
-        price_df,
+        train_df,
         label_func = make_directional_labels,
-        model_type = "classification",
+        model_type = "xgb_class",
         model_name="directional_1bar",
         horizon=1)
     
-    reg_model, reg_metrics, reg_path = train_ml_model(
-        price_df,
+    reg5_model, reg5_metrics, reg5_path = train_ml_model(
+        train_df,
         label_func= make_x_bar_future_labels,
-        model_type="regression",
+        model_type="xgb_reg",
         model_name="5_bar_future",
         x=5
     )
 
-    signals = generate_ensemble_signals(price_df, dir_path, reg_path)
+    reg10_model, reg10_metrics, reg10_path = train_ml_model(
+        train_df,
+        label_func= make_x_bar_future_labels,
+        model_type="xgb_reg",
+        model_name="5_bar_future",
+        x=10
+    )
 
-    backtest_results = backtest(price_df, signals)
+    signals = generate_ensemble_signals(test_df, dir_path, reg5_path, reg10_path)
+
+    backtest_results = backtest(test_df, signals)
 
     backtest_results.to_csv("data/raw/strategy_timeline.csv") #export the dataframe in the context of strategy to return
 
