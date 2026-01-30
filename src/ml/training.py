@@ -52,30 +52,31 @@ def train_ml_model(price_df, label_func, model_type, model_name, model_dir = "da
     )
 
     model = make_baseline_model(model_type=model_type) #creates a model given the model type
-    model.fit(X_train, y_train)
+    model.fit(X_train, y_train) #runs model training sequence on the training dataset with the target dataset
 
     #classfiication metrics
-    if model_type== "classification":
-
-        y_proba = model.predict_proba(X_test)[:, 1]
-        y_pred = (y_proba > 0.5).astype(int)
+    if model_type== "xgb_class":
+        y_proba = model.predict_proba(X_test)[:, 1] #has the model predict probability of directional change for each row
+        y_pred = (y_proba > 0.5).astype(int) #turns it's answer into 1 or 0 for up or down
 
         metrics = {
-            "accuracy": accuracy_score(y_test, y_pred),
-            "roc_auc": roc_auc_score(y_test, y_proba)
+            "accuracy": accuracy_score(y_test, y_pred), #scikit metric that measures between label and guess
+            "roc_auc": roc_auc_score(y_test, y_proba) #this determines out of how many actual positive days is it probable that the model predicts a positive day
         }
     #regression metrics
     else:
         y_pred = model.predict(X_test)
 
         metrics ={
-            "mae": mean_absolute_error(y_test, y_pred),
-            "rmse": mean_squared_error(y_test, y_pred),
-            "r2": r2_score(y_test, y_pred) ** 0.5
+            "mae": mean_absolute_error(y_test, y_pred), #average absolute error between test and prediction
+            "rmse": mean_squared_error(y_test, y_pred) **0.5, # rmse shows how bad the worst ones are
+            "r2": r2_score(y_test, y_pred) # tells whether or not the model is actually learning anything and how much it correlates to the data or explains anything
         }
+
+
     # save model
 
-    if model_name is None:
+    if model_name is None: # creates a model name if none was given
         label_name = label_func.__name__
         model_name = f"{label_name}_{model_type}"
 

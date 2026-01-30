@@ -19,6 +19,7 @@ def main():
 
     train_df, test_df = time_series_split(price_df, train_ratio=0.8) # split the data %80 train %20 test Allows for out of sample evaluation
 
+    #create a directional predictor, train to predict whether the stock direction for the next day will be up or down
     dir_1bar_features, dir_model, dir_metrics, dir_path = train_ml_model(
         train_df,
         label_func = make_directional_labels,
@@ -27,7 +28,8 @@ def main():
         horizon=1)
     
     dir_1bar_features.to_csv("data/features/dir_1bar_features.csv")
-    
+
+    #Create a return predictor, train to predict the return at 5 days
     reg_5bar_features, reg5_model, reg5_metrics, reg5_path = train_ml_model(
         train_df,
         label_func= make_x_bar_future_labels,
@@ -38,6 +40,7 @@ def main():
 
     reg_5bar_features.to_csv("data/features/reg_5bar_features.csv")
 
+    #Create a return predictor, train to predict the return at 10 days
     reg_10bar_features, reg10_model, reg10_metrics, reg10_path = train_ml_model(
         train_df,
         label_func= make_x_bar_future_labels,
