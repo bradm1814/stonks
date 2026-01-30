@@ -1,4 +1,4 @@
-from src.data_loader import load_ohlcv
+from src.database.data_loader import load_ohlcv
 from src.ml.training import train_ml_model
 from src.ml.signals import generate_directional_signals, generate_regression_signals
 from src.ml.labeling import make_directional_labels, make_x_bar_future_labels

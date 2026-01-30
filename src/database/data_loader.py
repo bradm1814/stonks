@@ -1,4 +1,4 @@
-from db import SessionLocal, Price
+from src.database.db import SessionLocal, Price
 from sqlalchemy import select
 import pandas as pd
 import datetime as datetime

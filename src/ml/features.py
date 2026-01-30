@@ -1,5 +1,4 @@
 import pandas as pd
-from src import indicators
 import numpy as np
 
 def build_feature_matrix(price_df: pd.DataFrame) -> pd.DataFrame:

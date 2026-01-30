@@ -1,5 +1,5 @@
 import yfinance as yf
-from src.db import SessionLocal, Price, init_db
+from src.database.db import SessionLocal, Price, init_db
 
 def seed_data(ticker, start, end):
     """
