@@ -19,14 +19,16 @@ def main():
 
     train_df, test_df = time_series_split(price_df, train_ratio=0.8)
 
-    dir_model, dir_metrics, dir_path = train_ml_model(
+    dir_1bar_features, dir_model, dir_metrics, dir_path = train_ml_model(
         train_df,
         label_func = make_directional_labels,
         model_type = "xgb_class",
         model_name="directional_1bar",
         horizon=1)
     
-    reg5_model, reg5_metrics, reg5_path = train_ml_model(
+    dir_1bar_features.to_csv("data/features/dir_1bar_features.csv")
+    
+    reg_5bar_features, reg5_model, reg5_metrics, reg5_path = train_ml_model(
         train_df,
         label_func= make_x_bar_future_labels,
         model_type="xgb_reg",
@@ -34,13 +36,17 @@ def main():
         x=5
     )
 
-    reg10_model, reg10_metrics, reg10_path = train_ml_model(
+    reg_5bar_features.to_csv("data/features/reg_5bar_features.csv")
+
+    reg_10bar_features, reg10_model, reg10_metrics, reg10_path = train_ml_model(
         train_df,
         label_func= make_x_bar_future_labels,
         model_type="xgb_reg",
         model_name="5_bar_future",
         x=10
     )
+
+    reg_10bar_features.to_csv("data/features/reg_10bar_features.csv")
 
     signals = generate_ensemble_signals(test_df, dir_path, reg5_path, reg10_path)
 

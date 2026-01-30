@@ -81,5 +81,5 @@ def train_ml_model(price_df, label_func, model_type, model_name, model_dir = "da
     model_path = Path(model_dir) / f"{model_name}.joblib"
     joblib.dump(model, model_path)
 
-    return model, metrics, model_path
+    return X, model, metrics, model_path
 
