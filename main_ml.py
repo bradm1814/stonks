@@ -15,9 +15,9 @@ def time_series_split(df, train_ratio=0.8):
     return train_df, test_df
 
 def main():
-    price_df = load_ohlcv("AAPL", "2015-01-01", "2026-01-01")
+    price_df = load_ohlcv("AAPL", "2015-01-01", "2026-01-01") # load data from database
 
-    train_df, test_df = time_series_split(price_df, train_ratio=0.8)
+    train_df, test_df = time_series_split(price_df, train_ratio=0.8) # split the data %80 train %20 test Allows for out of sample evaluation
 
     dir_1bar_features, dir_model, dir_metrics, dir_path = train_ml_model(
         train_df,

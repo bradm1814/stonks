@@ -17,21 +17,21 @@ def prepare_ml_dataset(price_df: pd.DataFrame, label_func, **label_kwargs):
     :param price_df: Description
     :type price_df: pd.DataFrame
     """
-    X = build_feature_matrix(price_df)
-    y = label_func(price_df, **label_kwargs)
+    X = build_feature_matrix(price_df) #Add all features to the original df creating a training matrix
+    y = label_func(price_df, **label_kwargs) #applies labels to the original df creating a testing matrix. it is variable and can call different functions for different label generation taking the respective keyword arguments
 
-    if isinstance(y, pd.DataFrame):
-        y = y.iloc[:, -1]
+    if isinstance(y, pd.DataFrame): 
+        y = y.iloc[:, -1]#because the returned item is the df with appended label column, this creates only a series with that appended column which is the target for the ML
 
     # Align on index interstection
 
-    common_index = X.index.intersection(y.index)
-    X = X.loc[common_index]
-    y = y.loc[common_index]
+    common_index = X.index.intersection(y.index) #this identifies the indeces in which these dataframes intersect
+    X = X.loc[common_index] #make sure the Training Dataset is composed of intersecting data
+    y = y.loc[common_index] #make sure the label Dataset is composed of intersecting data
 
     # drop any remaining NaNs
 
-    mask = X.notna().all(axis=1)
+    mask = X.notna().all(axis=1) # make sure there are no NaN values since they wont work for Training
     X=X[mask]
     y=y[mask]
 
@@ -40,16 +40,18 @@ def prepare_ml_dataset(price_df: pd.DataFrame, label_func, **label_kwargs):
 def train_ml_model(price_df, label_func, model_type, model_name, model_dir = "data/models", **label_kwargs):
 
     # build Dataset
-    X, y = prepare_ml_dataset(price_df, label_func,  **label_kwargs)
+    X, y = prepare_ml_dataset(price_df, label_func,  **label_kwargs) # prepare a dataset with given label_func and its respective arguments
 
+
+    #split the data 80-20 %80 train, %20 to measure metrics and performance. useful for tuning hyperparameters
     X_train, X_test, y_train, y_test = train_test_split(
-        X,
+        X, 
         y,
         test_size=0.2,
-        shuffle=False #time series no random shuffle
+        shuffle=False #because the data is time series sensitive you don't want to shuffle
     )
 
-    model = make_baseline_model(model_type=model_type)
+    model = make_baseline_model(model_type=model_type) #creates a model given the model type
     model.fit(X_train, y_train)
 
     #classfiication metrics
