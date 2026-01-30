@@ -37,6 +37,12 @@ def prepare_ml_dataset(price_df: pd.DataFrame, label_func, **label_kwargs):
 
     return X,y
 
+def print_training_metrics(model_training_metrics):
+    print("\n=== Strategy Evaluation ===\n")
+    for key, value in model_training_metrics.items():
+        print(f"{key:25}: {value}")
+    print("\n===========================\n")
+
 def train_ml_model(price_df, label_func, model_type, model_name, model_dir = "data/models", **label_kwargs):
 
     # build Dataset
@@ -84,5 +90,6 @@ def train_ml_model(price_df, label_func, model_type, model_name, model_dir = "da
     model_path = Path(model_dir) / f"{model_name}.joblib"
     joblib.dump(model, model_path)
 
-    return X, model, metrics, model_path
+    print_training_metrics(metrics)
 
+    return X, model, metrics, model_path

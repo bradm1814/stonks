@@ -45,4 +45,4 @@ def generate_ensemble_signals(
 
     #backtester wants position
     df['position'] = df['signal']
-    return df['position']
+    return df , df['position']

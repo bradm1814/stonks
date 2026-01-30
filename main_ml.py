@@ -27,6 +27,7 @@ def main():
         model_name="directional_1bar",
         horizon=1)
     
+    
     dir_1bar_features.to_csv("data/features/dir_1bar_features.csv")
 
     #Create a return predictor, train to predict the return at 5 days
@@ -51,15 +52,19 @@ def main():
 
     reg_10bar_features.to_csv("data/features/reg_10bar_features.csv")
 
-    signals = generate_ensemble_signals(test_df, dir_path, reg5_path, reg10_path)
+    raw_signal_data, signals = generate_ensemble_signals(test_df, dir_path, reg5_path, reg10_path)
+
+    raw_signal_data.to_csv("data/raw/raw_signal_data.csv")
+
+    signals.to_csv("results/signals.csv")
 
     backtest_results = backtest(test_df, signals)
 
-    backtest_results.to_csv("data/raw/strategy_timeline.csv") #export the dataframe in the context of strategy to return
+    backtest_results.to_csv("results/strategy_timeline.csv") #export the dataframe in the context of strategy to return
 
     trade_log = extract_trades(backtest_results) # this looks a every strategy position and extracts when and where trades were made
 
-    trade_log.to_csv("data/raw/trade_log.csv") #export out the trade log for interrogation
+    trade_log.to_csv("results/trade_log.csv") #export out the trade log for interrogation
 
     report = evaluate_strategy(backtest_results, trade_log) #1 pager showing high level key metrics for strategy
 
