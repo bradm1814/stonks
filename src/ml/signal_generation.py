@@ -33,15 +33,28 @@ def generate_ensemble_signals(
     df['predicted_return_5_bar'] = reg5_model.predict(X)
     df['predicted_return_10_bar'] = reg10_model.predict(X)
 
+    low5, high5 = df["predicted_return_5_bar"].quantile([0.05, 0.95])
+    low10, high10 = df["predicted_return_10_bar"].quantile([0.05, 0.95])
+
+    df["ret5_norm"] = df["predicted_return_5_bar"].clip(low5, high5)
+    df["ret5_norm"] = (df["ret5_norm"] - low5) / (high5 - low5) * 2 - 1
+
+    df["ret10_norm"] = df["predicted_return_10_bar"].clip(low10, high10)
+    df["ret10_norm"] = (df["ret10_norm"] - low10) / (high10 - low10) * 2 - 1
+
+    df["prob_norm"] = (df["prob_up"] - 0.5) * 2
+
+
+
     #ensemble logic
 
     df["ensemble_score"] = (
-        0.5 *df["prob_up"] +
-        0.3 *df['predicted_return_5_bar'] +
-        0.2 *df['predicted_return_10_bar']
+        0.5 *df["prob_norm"] +
+        0.3 *df['ret5_norm'] +
+        0.2 *df['ret10_norm']
     )
 
-    df["signal"] = (df["ensemble_score"]>0).astype(int)
+    df["signal"] = (df["ensemble_score"]>0.05).astype(int)
 
     #backtester wants position
     df['position'] = df['signal']
