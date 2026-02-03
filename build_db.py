@@ -42,7 +42,35 @@ if __name__ == "__main__":
     #initiate the database and then seed it with data
     
     init_db()
+
+    #easy to Overfit
     seed_data("AAPL", "2010-01-01", "2026-01-13")
+    seed_data("MSFT", "2010-01-01", "2026-01-13")
+    seed_data("NVDA", "2010-01-01", "2026-01-13")
+
+    #Mean Reverting, Choppy, Hard Mode
+    seed_data("IWM", "2008-01-01", "2026-01-13")
+    seed_data("XLF", "2006-01-01", "2026-01-13")
+    seed_data("FXI", "2007-09-02", "2026-01-13")
+
+    #Volatility Stress test
     seed_data("TSLA", "2010-07-02", "2026-01-13")
+    seed_data("AMD", "2010-01-01", "2026-01-13")
+    seed_data("META", "2014-01-01", "2026-01-13")
+
+    # macro/index Behavior
     seed_data("SPY", "2010-01-01", "2026-01-13")
+    seed_data("QQQ", "2010-01-01", "2026-01-13")
+    seed_data("DIA", "2010-01-01", "2026-01-13")
+
+    #Wierd behavior Assets
+    seed_data("GLD", "2010-01-01", "2026-01-13")
+    seed_data("UNG", "2010-01-01", "2026-01-13")
+    seed_data("ARKK", "2010-01-01", "2026-01-13")
+
+    #untradable
+    seed_data("SNAP", "2017-06-01", "2026-01-13")
+    seed_data("PLTR", "2020-10-10", "2026-01-13")
+    seed_data("COIN", "2021-04-16", "2026-01-13")
+
     

@@ -6,6 +6,7 @@ from src.ml.signal_generation import generate_ensemble_signals
 from src.backtester.backtester import backtest
 from backtester.trade_log import extract_trades
 from backtester.evaluation import evaluate_strategy, print_evaluation
+import pandas as pd
 
 def time_series_split(df, train_ratio=0.8):
     n=len(df)
@@ -15,7 +16,7 @@ def time_series_split(df, train_ratio=0.8):
     return train_df, test_df
 
 def main():
-    price_df = load_ohlcv("AAPL", "2015-01-01", "2026-01-01") # load data from database
+    price_df = load_ohlcv("UNG", "2010-01-01", "2026-01-01") # load data from database
 
     train_df, test_df = time_series_split(price_df, train_ratio=0.8) # split the data %80 train %20 test Allows for out of sample evaluation
 
@@ -61,6 +62,10 @@ def main():
     backtest_results = backtest(test_df, signals)
 
     backtest_results.to_csv("results/strategy_timeline.csv") #export the dataframe in the context of strategy to return
+
+    full_data = backtest_results.join(raw_signal_data[["predicted_return_5_bar", "predicted_return_10_bar", "ensemble_score"]], how="left")
+
+    full_data.to_csv("results/full_data.csv")
 
     trade_log = extract_trades(backtest_results) # this looks a every strategy position and extracts when and where trades were made
 
